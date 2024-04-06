@@ -28,25 +28,35 @@ function handleSelectedDate(selectedDates) {
 }
 
 let intervalId;
+let timerStarted = false;
 
 console.log(userSelectedDateInstance.selectedDates[0].getTime());
 
 function startTimer() {
-  clearInterval(intervalId);
-  let currentDate = new Date();
-  let timeDifference = userSelectedDateInstance.selectedDates[0] - currentDate;
-  updateTimerDisplay(timeDifference);
+  if (!timerStarted) {
+    timerStarted = true;
+    datePickerInput.disabled = true;
+    startButton.disabled = true;
 
-  intervalId = setInterval(() => {
+    clearInterval(intervalId);
+    let currentDate = new Date();
+    let timeDifference =
+      userSelectedDateInstance.selectedDates[0] - currentDate;
     updateTimerDisplay(timeDifference);
 
-    if (timeDifference <= 0) {
-      clearInterval(intervalId);
-      displaySuccessMessage('Success!');
-    }
+    intervalId = setInterval(() => {
+      updateTimerDisplay(timeDifference);
 
-    timeDifference -= 1000;
-  }, 1000);
+      if (timeDifference <= 0) {
+        clearInterval(intervalId);
+        displaySuccessMessage('Success!');
+        timerStarted = false;
+        datePickerInput.disabled = false;
+      }
+
+      timeDifference -= 1000;
+    }, 1000);
+  }
 }
 
 function displaySuccessMessage(message) {
